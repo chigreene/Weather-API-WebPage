@@ -9,9 +9,20 @@ var root = document.getElementById('todaysWeather')
 var btn = document.querySelector('#selectCityBtn')
 var cityInput = document.querySelector('#citySelector')
 
+
+var temp = document.createElement('p')
+var wind = document.createElement('p')
+var humidity = document.createElement('p')
+
+root.append(temp)
+            root.append(wind)
+            root.append(humidity)
+
 btn.addEventListener("click", function(){
     var selectedCity = cityInput.value
     var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + selectedCity + '&appid=' + APIKey;
+
+    
 
 // fetch query
     fetch(queryURL)
@@ -21,16 +32,14 @@ btn.addEventListener("click", function(){
         .then(function (data){
             console.log(data)
             
-            var temp = document.createElement('p')
-            var wind = document.createElement('p')
-            var humidity = document.createElement('p')
             
-            temp.textContent = 'Temp: ' + Math.floor((data.main.temp - 273.15) * 1.8 + 32) + ' degrees Kelvin';
-            wind.textContent = 'Wind: ' + data.wind.speed + 'mph';
-            humidity.textContent = 'Humidity: ' + data.main.humidity + '%'
 
-            root.append(temp)
-            root.append(wind)
-            root.append(humidity)
+           
+            
+            temp.innerHTML = 'Temp: ' + Math.floor((data.main.temp - 273.15) * 1.8 + 32) + ' degrees Kelvin';
+            wind.innerHTML = 'Wind: ' + data.wind.speed + 'mph';
+            humidity.innerHTML = 'Humidity: ' + data.main.humidity + '%'
+
+            
         });
 })

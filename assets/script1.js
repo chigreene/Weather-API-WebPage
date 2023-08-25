@@ -10,7 +10,11 @@ var btn = document.querySelector('#selectCityBtn')
 var cityInput = document.querySelector('#citySelector')
 var stateInput = document.querySelector('#stateSelector')
 var countryInput = document.querySelector('#countrySelector')
-var bsDiv = document.querySelector('.fiveDayCard')
+var bsDiv1 = document.querySelector('.fiveDayCard1')
+var bsDiv2 = document.querySelector('.fiveDayCard2')
+var bsDiv3 = document.querySelector('.fiveDayCard3')
+var bsDiv4 = document.querySelector('.fiveDayCard4')
+var bsDiv5 = document.querySelector('.fiveDayCard5')
 
 var cityName = document.createElement('h2')
 var todaysDate = document.createElement('h2')
@@ -34,7 +38,9 @@ btn.addEventListener("click", function(){
     var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + selectedCity + '&appid=' + APIKey;
     var geoCodingURL = 'http://api.openweathermap.org/geo/1.0/direct?q=' + selectedCity + ',' + selectedState + ',' + selectedCountry + '&appid=' + APIKey;
     
-    document.getElementsByClassName('fiveDayCard')
+    var bs5Day1 = $('.fiveDayCard1');
+    bs5Day1.css('display', 'inline-block')
+
 // fetch query
     fetch(queryURL)
         .then(function (response){
@@ -65,6 +71,7 @@ btn.addEventListener("click", function(){
                 .then(function(data){
                     console.log(data)
                     
+                    var bsDivs = [bsDiv1, bsDiv2, bsDiv3, bsDiv4, bsDiv5]
 
                     for( let i=0; i<5; i++){   
                                     
@@ -85,7 +92,7 @@ btn.addEventListener("click", function(){
                         daysHumidity.textContent = 'Humidity: ' + data.list[i].main.humidity
 
                         
-                        bsDiv.append(forecastDiv)
+                        $(bsDivs[i]).append(forecastDiv)
                         forecastDiv.append(date)
                         forecastDiv.append(daysTemp)
                         forecastDiv.append(daysWind)
@@ -99,9 +106,10 @@ btn.addEventListener("click", function(){
                 })
         })
     
+    // bs5DayCard.setAttribute("style", "display: inline-block");
 })
 
 // lat lon geocoding API
 
-
+// parent container and create a new div each time i go through the loop make sure to erase div before creating new one 
 

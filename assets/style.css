@@ -1,15 +1,91 @@
-.fiveDayCard1{
-    display: none;
+body{
+    background-color: skyblue;
 }
-.fiveDayCard2{
-    display: none;
+h1{
+    color: whitesmoke;
+    font-size: 4rem;
 }
-.fiveDayCard3{
-    display: none;
+#titleBar{
+    background-color: gray;
+    display: flex;
+    justify-content: space-between;
+
 }
-.fiveDayCard4{
-    display: none;
+#inputContainer{
+    background-color: gray;
+    padding: ;
 }
-.fiveDayCard5{
+#inputLabel{
+    font-size: 2rem;
+    padding-right: 30px;
+    color: whitesmoke;
+}
+
+#citySelector{
+    padding: 10px;
+    margin-bottom: ;
+}
+#lastResults{
+    background-color: lightgrey;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 400px;
+    align-items: left;
+}
+
+.historyItemClass{
+    /* border: 3px solid black; */
+    background-color: gray;
+    color: whitesmoke;
+    font-size: 1.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 10px 10px 10px;
+    align-items: center;
+}
+.buttonClass{
+    margin: 0px 10px
+}
+#todaysWeatherContainer{
+    background-color: lightgray;
+    
+}
+#contentContainer{
+    display: flex;
+    flex-direction: row;
+    margin-top: 40px;
+}
+#fiveDayForecast{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 50px
+    
+}
+#todaysWeatherContainer{
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    max-width: 500px;
+    border-radius: 10px;
+    margin: 10px;
+    margin-left: 60px;
+    padding: 10px
+}
+.oneOfFiveContainer{
+    background-color: lightgray;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    flex-grow: 1;
+    margin: 10px;
+    padding: 10px;
+}
+
+.hidden{
     display: none;
 }

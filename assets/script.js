@@ -1,107 +1,157 @@
 var APIKey = '3b136a65d0153eeff26cb38c4e78b611'
-var city = 'Hartford';
+var root = document.querySelector("#todayWeather")
+var fiveDayContainer = document.querySelector('#fiveDayForecast')
 
-
-var root = document.getElementById('todaysWeather')
-var forecastSection = document.getElementById('forecastSection')
-
-// button
-var btn = document.querySelector('#selectCityBtn')
-var cityInput = document.querySelector('#citySelector')
-var stateInput = document.querySelector('#stateSelector')
-var countryInput = document.querySelector('#countrySelector')
-var bsDiv = document.querySelector('.fiveDayCard')
-
-var cityName = document.createElement('h2')
-var todaysDate = document.createElement('h2')
-var temp = document.createElement('p')
-var wind = document.createElement('p')
-var humidity = document.createElement('p')
+var btn = document.querySelector('#btn');
 
 var today = dayjs();
-$('#1a').text(today.format('MMM D, YYYY'));
 
-root.append(cityName)
-root.append(todaysDate)
-root.append(temp)
-root.append(wind)
-root.append(humidity)
+var lastResults = document.querySelector('#lastResults');
+var cityInput = document.querySelector('#citySelector');
+var stateInput = document.querySelector('#stateSelector');
+var countryInput = document.querySelector('#countrySelector')
+var array = JSON.parse(localStorage.getItem('savedCities')) || [];
 
-btn.addEventListener("click", function(){
-    var selectedCity = cityInput.value
-    var selectedState = stateInput.value
-    var selectedCountry = countryInput.value
-    var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + selectedCity + '&appid=' + APIKey;
-    var geoCodingURL = 'http://api.openweathermap.org/geo/1.0/direct?q=' + selectedCity + ',' + selectedState + ',' + selectedCountry + '&appid=' + APIKey;
+
+
+
+function performSearch(city) {
+    if (!city) return;
+    if(!array.includes(city)){
+        array.push(city);
+        localStorage.setItem('savedCities', JSON.stringify(array));
+        lastResults.innerHTML = '';
+        renderHistory();
+    }
+}
+
+function apiCall(city, state, country){
+    todayWeather.textContent = ""
     
-    document.getElementsByClassName('fiveDayCard')
-// fetch query
+    var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIKey;
+    console.log(`queryURL: ${queryURL}`)
+
+    // var geoCodingURL = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + ',' + state + ',' + country + '&appid=' + APIKey;
+
+    
+
     fetch(queryURL)
-        .then(function (response){
+        .then(function (response){   
             return response.json();
+            
+            
         })
         .then(function (data){
-            // console.log(data.name)
-            cityName.innerHTML = selectedCity;
-            $(todaysDate).text(today.format('MMM D, YYYY'));
-            temp.innerHTML = 'Temp: ' + Math.floor((data.main.temp - 273.15) * 1.8 + 32) + ' degrees Kelvin';
-            wind.innerHTML = 'Wind: ' + data.wind.speed + 'mph';
-            humidity.innerHTML = 'Humidity: ' + data.main.humidity + '%'            
-        });
-    fetch(geoCodingURL)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(data){
-            var lat = data[0].lat;
-            var lon = data[0].lon;
+            // is this the best place for this?
+            $('#dateRoot').text(today.format('MMM D, YYYY'));
+            console.log(data)
+            var temp = document.createElement('p');
+            var wind = document.createElement('p');
+            var humidity = document.createElement('p');
 
+            root.append(temp)
+            root.append(wind)
+            root.append(humidity)
+
+            temp.innerHTML = 'Temp: ' + Math.floor((data.main.temp - 273.15) * 1.8 + 32) + ' degrees Fahrenheit';
+
+            wind.innerHTML = 'Wind: ' + data.wind.speed + 'mph';
+
+            humidity.innerHTML = 'Humidity: ' + data.main.humidity + '%'
+
+            var lat = data.coord.lat
+            var lon = data.coord.lon
+
+            console.log(lat)
+            console.log(lon)
+            
             var fiveDayForecastURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
             
             fetch(fiveDayForecastURL)
                 .then(function(response){
-                    return response.json();
+                    return response.json()
                 })
                 .then(function(data){
-                    console.log(data)
-                    
-
-                    for( let i=0; i<5; i++){   
-                                    
+                    for( let i=0; i<5; i++){ 
                         var forecastDiv = document.createElement('div')
                         var date = document.createElement('h3')
-                        var daysTemp = document. createElement('p')
-                        var daysWind = document. createElement('p')
-                        var daysHumidity = document. createElement('p')
+                        var fiveDaysTemp = document. createElement('p')
+                        var fiveDaysWind = document. createElement('p')
+                        var fiveDaysHumidity = document. createElement('p')
 
                         var today1 = dayjs()
                         var tomorrow = today1.add(i, 'day');
                         var formattedDate = tomorrow.format('MMM D, YYYY')
                         date.append(formattedDate)
 
+                        forecastDiv.className = 'oneOfFiveContainer';
                         
-                        daysTemp.textContent = 'Temp: ' + data.list[i].main.temp
-                        daysWind.textContent = 'Wind: ' + data.list[i].wind.speed
-                        daysHumidity.textContent = 'Humidity: ' + data.list[i].main.humidity
+                        fiveDaysTemp.textContent = 'Temp: ' + Math.floor((data.list[i].main.temp -273.15) * 1.8 + 32)
+                        fiveDaysWind.textContent = 'Wind: ' + data.list[i].wind.speed
+                        fiveDaysHumidity.textContent = 'Humidity: ' + data.list[i].main.humidity
 
-                        
-                        bsDiv.append(forecastDiv)
+                        fiveDayContainer.append(forecastDiv)
                         forecastDiv.append(date)
-                        forecastDiv.append(daysTemp)
-                        forecastDiv.append(daysWind)
-                        forecastDiv.append(daysHumidity)
+                        forecastDiv.append(fiveDaysTemp)
+                        forecastDiv.append(fiveDaysWind)
+                        forecastDiv.append(fiveDaysHumidity)
                     }
-                    
-
-
-                    
-
                 })
+            
         })
+    // fetch(geoCodingURL)
+    //     .then(function (response){
+    //         return response.json()
+    //     })
+    //     .then(function (data){
+    //         console.log(data)
+    //     })
+}
+
+btn.addEventListener('click', function(event) {
+    event.preventDefault();
+    fiveDayContainer.textContent = ''
     
-})
+    var state = stateInput.value
+    var country = countryInput.value
+    var city = cityInput.value;
+    if (cityInput.value === '') return;
+    console.log(city)
+    performSearch(city);
+    apiCall(city, state, country)
+});
 
-// lat lon geocoding API
+function renderHistory() {
+    var localHistoryArray = JSON.parse(localStorage.getItem('savedCities'));
 
+    if (localHistoryArray && localHistoryArray.length > 0) {
+        for (let i = 0; i < localHistoryArray.length; i++) {
+            var liEl = document.createElement('p');
+            var historyItemBtn = document.createElement('button');
 
+            historyItemBtn.textContent = 'Search';
+            historyItemBtn.classList.add('buttonClass');
+            historyItemBtn.setAttribute('data-city', localHistoryArray[i]); // store the city in a data attribute
 
+            liEl.classList.add('historyItemClass');
+            liEl.textContent = localHistoryArray[i];
+            liEl.append(historyItemBtn);
+
+            lastResults.append(liEl);
+        }    
+    }
+}
+
+// Use event delegation for dynamically created elements
+lastResults.addEventListener('click', function(event) {
+    if (event.target.classList.contains('buttonClass')) {
+        var associatedCity = event.target.getAttribute('data-city');
+        performSearch(associatedCity);
+        
+    }
+    fiveDayContainer.textContent = ''
+    // var dataCityValue = event.target.getAttribute;
+    apiCall(associatedCity);
+});
+
+renderHistory();

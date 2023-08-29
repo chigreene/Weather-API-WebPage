@@ -3,6 +3,7 @@ var root = document.querySelector("#todayWeather")
 var fiveDayContainer = document.querySelector('#fiveDayForecast')
 
 var btn = document.querySelector('#btn');
+var resetBtn = document.querySelector('#resetBtn')
 
 var today = dayjs();
 
@@ -144,6 +145,7 @@ function renderHistory() {
 
 // Use event delegation for dynamically created elements
 lastResults.addEventListener('click', function(event) {
+    event.preventDefault()
     if (event.target.classList.contains('buttonClass')) {
         var associatedCity = event.target.getAttribute('data-city');
         performSearch(associatedCity);
@@ -154,4 +156,12 @@ lastResults.addEventListener('click', function(event) {
     apiCall(associatedCity);
 });
 
+
+
 renderHistory();
+
+resetBtn.addEventListener('click', function(event){
+    event.preventDefault()
+    localStorage.clear()
+    location.reload()
+})

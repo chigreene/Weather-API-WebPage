@@ -31,7 +31,7 @@ function apiCall(city){
     todayWeather.textContent = ""
     
     var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIKey;
-    console.log(`queryURL: ${queryURL}`)
+    
 
     // var geoCodingURL = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + ',' + state + ',' + country + '&appid=' + APIKey;
 
@@ -46,7 +46,7 @@ function apiCall(city){
         .then(function (data){
             // is this the best place for this?
             $('#dateRoot').text(today.format('MMM D, YYYY'));
-            console.log(data)
+            
             var temp = document.createElement('p');
             var weatherIcon = document.createElement('img')
             var weather = document.createElement('p')
@@ -90,8 +90,8 @@ function apiCall(city){
             var lat = data.coord.lat
             var lon = data.coord.lon
 
-            console.log(lat)
-            console.log(lon)
+            // console.log(lat)
+            // console.log(lon)
             
             var fiveDayForecastURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + APIKey;
             
@@ -100,12 +100,14 @@ function apiCall(city){
                     return response.json()
                 })
                 .then(function(data){
-                    
+                    console.log(data)
                     weatherContainer.classList.remove('hidden')
                     for( let i=0; i<5; i++){ 
                         var forecastDiv = document.createElement('div')
                         var date = document.createElement('h3')
                         var fiveDaysTemp = document. createElement('p')
+                        var fiveDaysWeather = document.createElement('p')
+                        var fiveDaysWeatherIcon = document.createElement('img')
                         var fiveDaysWind = document. createElement('p')
                         var fiveDaysHumidity = document. createElement('p')
 
@@ -117,12 +119,35 @@ function apiCall(city){
                         forecastDiv.className = 'oneOfFiveContainer';
                         
                         fiveDaysTemp.textContent = 'Temp: ' + Math.floor((data.list[i].main.temp -273.15) * 1.8 + 32)
+
+
+                        var icon = data.list[i].weather[0].icon
+                        var iconCodes = {
+                            '01d' : 'https://openweathermap.org/img/wn/01d@2x.png',
+                            '02d' : 'https://openweathermap.org/img/wn/02d@2x.png',
+                            '03d' : 'https://openweathermap.org/img/wn/03d@2x.png',
+                            '04d' : 'https://openweathermap.org/img/wn/04d@2x.png',
+                            '09d' : 'https://openweathermap.org/img/wn/09d@2x.png',
+                            '10d' : 'https://openweathermap.org/img/wn/10d@2x.png',
+                            '11d' : 'https://openweathermap.org/img/wn/11d@2x.png',
+                            '13d' : 'https://openweathermap.org/img/wn/13d@2x.png',
+                            '50d' : 'https://openweathermap.org/img/wn/50d@2x.png',
+                        }
+            
+                        iconURL = iconCodes[icon]
+
+                        fiveDaysWeatherIcon.src = iconURL
+
+                        fiveDaysWeather.textContent = data.list[i].weather[0].main
+
                         fiveDaysWind.textContent = 'Wind: ' + data.list[i].wind.speed
                         fiveDaysHumidity.textContent = 'Humidity: ' + data.list[i].main.humidity
 
                         fiveDayContainer.append(forecastDiv)
                         forecastDiv.append(date)
                         forecastDiv.append(fiveDaysTemp)
+                        forecastDiv.append(fiveDaysWeatherIcon)
+                        forecastDiv.append(fiveDaysWeather)
                         forecastDiv.append(fiveDaysWind)
                         forecastDiv.append(fiveDaysHumidity)
                     }

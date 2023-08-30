@@ -1,6 +1,7 @@
 var APIKey = '3b136a65d0153eeff26cb38c4e78b611'
 var root = document.querySelector("#todayWeather")
 var fiveDayContainer = document.querySelector('#fiveDayForecast')
+var weatherContainer = document.querySelector('#weatherContainer')
 
 var btn = document.querySelector('#btn');
 var resetBtn = document.querySelector('#resetBtn')
@@ -26,7 +27,7 @@ function performSearch(city) {
     }
 }
 
-function apiCall(city, state, country){
+function apiCall(city){
     todayWeather.textContent = ""
     
     var queryURL = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + APIKey;
@@ -47,14 +48,40 @@ function apiCall(city, state, country){
             $('#dateRoot').text(today.format('MMM D, YYYY'));
             console.log(data)
             var temp = document.createElement('p');
+            var weatherIcon = document.createElement('img')
+            var weather = document.createElement('p')
             var wind = document.createElement('p');
             var humidity = document.createElement('p');
 
             root.append(temp)
+            root.append(weatherIcon)
+            root.append(weather)
             root.append(wind)
             root.append(humidity)
 
+            // icon mapping
+            var icon = data.weather[0].icon
+            var iconCodes = {
+                '01d' : 'https://openweathermap.org/img/wn/01d@2x.png',
+                '02d' : 'https://openweathermap.org/img/wn/02d@2x.png',
+                '03d' : 'https://openweathermap.org/img/wn/03d@2x.png',
+                '04d' : 'https://openweathermap.org/img/wn/04d@2x.png',
+                '09d' : 'https://openweathermap.org/img/wn/09d@2x.png',
+                '10d' : 'https://openweathermap.org/img/wn/10d@2x.png',
+                '11d' : 'https://openweathermap.org/img/wn/11d@2x.png',
+                '13d' : 'https://openweathermap.org/img/wn/13d@2x.png',
+                '50d' : 'https://openweathermap.org/img/wn/50d@2x.png',
+            }
+
+            iconURL = iconCodes[icon]
+
+            
+
             temp.innerHTML = 'Temp: ' + Math.floor((data.main.temp - 273.15) * 1.8 + 32) + ' degrees Fahrenheit';
+
+            weatherIcon.src = iconURL
+
+            weather.innerHTML = data.weather[0].main
 
             wind.innerHTML = 'Wind: ' + data.wind.speed + 'mph';
 
@@ -73,6 +100,8 @@ function apiCall(city, state, country){
                     return response.json()
                 })
                 .then(function(data){
+                    
+                    weatherContainer.classList.remove('hidden')
                     for( let i=0; i<5; i++){ 
                         var forecastDiv = document.createElement('div')
                         var date = document.createElement('h3')
@@ -113,13 +142,12 @@ btn.addEventListener('click', function(event) {
     event.preventDefault();
     fiveDayContainer.textContent = ''
     
-    var state = stateInput.value
-    var country = countryInput.value
+    
     var city = cityInput.value;
     if (cityInput.value === '') return;
     console.log(city)
     performSearch(city);
-    apiCall(city, state, country)
+    apiCall(city)
 });
 
 function renderHistory() {

@@ -33,6 +33,10 @@ h1{
     width: 400px;
     align-items: left;
 }
+.todaysDate{
+    font-size: 2rem;
+    font-weight: bold;
+}
 
 .historyItemClass{
     /* border: 3px solid black; */
